@@ -734,8 +734,22 @@ function OffersManager() {
     };
 
     const loadProducts = async () => {
-        const { data } = await supabase.from('products').select('id, name, category');
-        if (data) setProducts(data);
+        const { data } = await supabase.from('products').select('*');
+        if (data) setProducts(data.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            brand: item.brand,
+            price: Number(item.price),
+            originalPrice: item.original_price ? Number(item.original_price) : undefined,
+            images: item.images || [],
+            tag: item.tag,
+            category: item.category,
+            description: item.description,
+            notes: item.notes || [],
+            seasons: item.seasons || { winter: 50, spring: 50, summer: 50, fall: 50 },
+            theme: item.theme,
+            theme_config: item.theme_config
+        })));
     };
 
     const handleCreate = () => {
