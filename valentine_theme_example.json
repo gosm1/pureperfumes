@@ -1,0 +1,32 @@
+{
+  "colors": {
+    "primary": "#E31B23",
+    "secondary": "#FFFFFF",
+    "background": "#FFF5F5",
+    "text": "#4A0404",
+    "accent": "#D4AF37",
+    "buttonBg": "#E31B23",
+    "buttonText": "#FFFFFF",
+    "cardBg": "#FFFFFF"
+  },
+  "typography": {
+    "fontFamily": "Playfair Display, serif",
+    "headingSize": "text-6xl",
+    "bodySize": "text-lg"
+  },
+  "visuals": {
+    "overlayOpacity": 0.2,
+    "buttonShape": "pill",
+    "gradientOverlay": true,
+    "backgroundImage": "https://images.unsplash.com/photo-1518199266791-5375a83190b9?q=80&w=2070&auto=format&fit=crop"
+  },
+  "content": {
+    "tagline": "Déclarez votre flamme avec élégance",
+    "ctaText": "Offrir pour la Saint-Valentin ❤️",
+    "features": [
+        "Emballage Cadeau Offert",
+        "Carte Personnalisée",
+        "Livraison Express 24h"
+    ]
+  }
+}
