@@ -124,10 +124,11 @@ export default function AdminDashboard() {
 
             <main className="container mx-auto px-4 sm:px-6 py-8">
                 <Tabs defaultValue="orders" className="space-y-6">
-                    <TabsList className="grid w-full grid-cols-3 max-w-[600px]">
+                    <TabsList className="grid w-full grid-cols-4 max-w-[800px]">
                         <TabsTrigger value="orders">Commandes</TabsTrigger>
                         <TabsTrigger value="products">Produits</TabsTrigger>
                         <TabsTrigger value="packs">Packs</TabsTrigger>
+                        <TabsTrigger value="offers">Offres</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="orders">
@@ -276,6 +277,10 @@ export default function AdminDashboard() {
                             </CardContent>
                         </Card>
                     </TabsContent>
+
+                    <TabsContent value="offers">
+                        <OffersManager />
+                    </TabsContent>
                 </Tabs>
             </main>
 
@@ -415,9 +420,28 @@ function OrdersManager() {
                                         </TableCell>
                                         <TableCell className="whitespace-nowrap">{order.city === 'autre' ? order.other_city : order.city}</TableCell>
                                         <TableCell>
-                                            <div className="text-xs space-y-1 min-w-[150px]">
+                                            <div className="text-xs space-y-2 min-w-[200px]">
                                                 {order.cart_items.map((item: any, i: number) => (
-                                                    <div key={i}>{item.quantity}x {item.name}</div>
+                                                    <div key={i} className="space-y-1 pb-2 border-b border-gray-100 last:border-0">
+                                                        <div className="font-medium">{item.quantity}x {item.name}</div>
+                                                        {item.customization && (
+                                                            <div className="pl-3 space-y-0.5 text-gray-600 border-l-2 border-amber-400 ml-1">
+                                                                {item.customization.ringSize && (
+                                                                    <div className="text-[11px]">• Taille bague: <span className="font-semibold">{item.customization.ringSize}</span></div>
+                                                                )}
+                                                                {item.customization.perfumeType && (
+                                                                    <div className="text-[11px]">
+                                                                        • Parfum: {item.customization.perfumeType === 'other'
+                                                                            ? <span className="font-semibold text-orange-600">🔸 {item.customization.customPerfumeName}</span>
+                                                                            : <span className="font-semibold">{item.customization.perfumeType}</span>}
+                                                                    </div>
+                                                                )}
+                                                                {item.customization.loveLetterEnabled && (
+                                                                    <div className="text-[11px]">• 💌 Lettre pour: <span className="font-semibold">{item.customization.loveLetterRecipientName}</span></div>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 ))}
                                             </div>
                                         </TableCell>
@@ -681,3 +705,371 @@ function EditForm({ product, isNew, isPack, onSave, onCancel }: {
         </form >
     );
 }
+
+import { SpecialOffer } from '@/types';
+import { getOfferStatus } from '@/lib/offers';
+import { Calendar, Tag, ToggleLeft, ToggleRight } from 'lucide-react';
+
+function OffersManager() {
+    const [offers, setOffers] = useState<SpecialOffer[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [selectedOffer, setSelectedOffer] = useState<SpecialOffer | null>(null);
+    const [isCreating, setIsCreating] = useState(false);
+    const [products, setProducts] = useState<Product[]>([]);
+
+    useEffect(() => {
+        loadOffers();
+        loadProducts();
+    }, []);
+
+    const loadOffers = async () => {
+        setLoading(true);
+        const { data } = await supabase
+            .from('special_offers')
+            .select('*')
+            .order('priority', { ascending: false });
+        if (data) setOffers(data);
+        setLoading(false);
+    };
+
+    const loadProducts = async () => {
+        const { data } = await supabase.from('products').select('id, name, category');
+        if (data) setProducts(data);
+    };
+
+    const handleCreate = () => {
+        const now = new Date();
+        const nextMonth = new Date(now);
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+        setSelectedOffer({
+            id: '',
+            created_at: '',
+            updated_at: '',
+            title: '',
+            summary: '',
+            details: '',
+            is_active: true,
+            start_date: now.toISOString(),
+            end_date: nextMonth.toISOString(),
+            applicable_products: [],
+            priority: 0
+        });
+        setIsCreating(true);
+        setDialogOpen(true);
+    };
+
+    const handleEdit = (offer: SpecialOffer) => {
+        setSelectedOffer(offer);
+        setIsCreating(false);
+        setDialogOpen(true);
+    };
+
+    const getStatusBadge = (offer: SpecialOffer) => {
+        const status = getOfferStatus(offer);
+        const styles = {
+            active: "bg-green-100 text-green-800 border-green-200",
+            upcoming: "bg-blue-100 text-blue-800 border-blue-200",
+            expired: "bg-gray-100 text-gray-600 border-gray-200",
+            inactive: "bg-red-100 text-red-800 border-red-200"
+        };
+        const labels = {
+            active: "Active",
+            upcoming: "À venir",
+            expired: "Expirée",
+            inactive: "Inactive"
+        };
+        return <Badge variant="outline" className={styles[status]}>{labels[status]}</Badge>;
+    };
+
+    if (loading) return <div className="text-center py-10">Chargement...</div>;
+
+    return (
+        <>
+            <Card>
+                <CardHeader>
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <CardTitle>Offres Spéciales</CardTitle>
+                            <CardDescription>Gérez vos promotions et offres limitées ({offers.length})</CardDescription>
+                        </div>
+                        <Button onClick={handleCreate}>
+                            <Plus className="w-4 h-4 mr-2" />
+                            Nouvelle Offre
+                        </Button>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Titre</TableHead>
+                                    <TableHead>Statut</TableHead>
+                                    <TableHead>Dates</TableHead>
+                                    <TableHead>Produits</TableHead>
+                                    <TableHead className="text-right">Actions</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {offers.map((offer) => (
+                                    <TableRow key={offer.id}>
+                                        <TableCell className="font-medium max-w-[200px]">
+                                            <div className="truncate">{offer.title}</div>
+                                            <div className="text-xs text-muted-foreground truncate">{offer.summary}</div>
+                                        </TableCell>
+                                        <TableCell>{getStatusBadge(offer)}</TableCell>
+                                        <TableCell className="text-xs whitespace-nowrap">
+                                            <div>Début: {new Date(offer.start_date).toLocaleDateString('fr-FR')}</div>
+                                            <div>Fin: {new Date(offer.end_date).toLocaleDateString('fr-FR')}</div>
+                                        </TableCell>
+                                        <TableCell>
+                                            {offer.applicable_products.length === 0 ? (
+                                                <Badge variant="outline">Tous les produits</Badge>
+                                            ) : (
+                                                <Badge variant="outline">{offer.applicable_products.length} produit(s)</Badge>
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <Button variant="ghost" size="sm" onClick={() => handleEdit(offer)}>
+                                                <Edit className="w-4 h-4" />
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                    {offers.length === 0 && (
+                        <div className="text-center py-12 text-muted-foreground">
+                            Aucune offre créée
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>{isCreating ? 'Nouvelle Offre' : 'Modifier l\'Offre'}</DialogTitle>
+                        <DialogDescription>
+                            {isCreating ? 'Créez une nouvelle offre promotionnelle' : 'Modifiez les détails de l\'offre'}
+                        </DialogDescription>
+                    </DialogHeader>
+                    {selectedOffer && (
+                        <OfferForm
+                            offer={selectedOffer}
+                            isNew={isCreating}
+                            products={products}
+                            onSave={() => {
+                                loadOffers();
+                                setDialogOpen(false);
+                            }}
+                            onCancel={() => setDialogOpen(false)}
+                        />
+                    )}
+                </DialogContent>
+            </Dialog>
+        </>
+    );
+}
+
+function OfferForm({ offer, isNew, products, onSave, onCancel }: {
+    offer: SpecialOffer;
+    isNew: boolean;
+    products: Product[];
+    onSave: () => void;
+    onCancel: () => void;
+}) {
+    const [form, setForm] = useState<SpecialOffer>(offer);
+    const [saving, setSaving] = useState(false);
+
+    useEffect(() => {
+        setForm(offer);
+    }, [offer]);
+
+    const save = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSaving(true);
+        try {
+            const data = {
+                title: form.title,
+                summary: form.summary,
+                details: form.details,
+                is_active: form.is_active,
+                start_date: form.start_date,
+                end_date: form.end_date,
+                applicable_products: form.applicable_products,
+                priority: form.priority
+            };
+
+            if (isNew) {
+                await supabase.from('special_offers').insert([data]);
+            } else {
+                await supabase.from('special_offers').update(data).eq('id', form.id);
+            }
+            onSave();
+        } catch (err: any) {
+            alert('Erreur: ' + err.message);
+        }
+        setSaving(false);
+    };
+
+    const deleteOffer = async () => {
+        if (!confirm('Supprimer cette offre?')) return;
+        await supabase.from('special_offers').delete().eq('id', form.id);
+        onSave();
+    };
+
+    const toggleProduct = (productId: string) => {
+        setForm({
+            ...form,
+            applicable_products: form.applicable_products.includes(productId)
+                ? form.applicable_products.filter(id => id !== productId)
+                : [...form.applicable_products, productId]
+        });
+    };
+
+    return (
+        <form onSubmit={save} className="space-y-6">
+            <div className="space-y-4">
+                <div className="space-y-2">
+                    <Label htmlFor="title">Titre de l'offre</Label>
+                    <Input
+                        id="title"
+                        value={form.title}
+                        onChange={e => setForm({ ...form, title: e.target.value })}
+                        placeholder="Offre Spéciale Saint-Valentin 💝"
+                        required
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="summary">Résumé (max 100 caractères)</Label>
+                    <Input
+                        id="summary"
+                        value={form.summary}
+                        onChange={e => setForm({ ...form, summary: e.target.value.slice(0, 100) })}
+                        placeholder="Profitez de notre pack exclusif..."
+                        maxLength={100}
+                        required
+                    />
+                    <p className="text-xs text-muted-foreground">{form.summary.length}/100</p>
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="details">Détails (optionnel, Markdown supporté)</Label>
+                    <textarea
+                        id="details"
+                        value={form.details || ''}
+                        onChange={e => setForm({ ...form, details: e.target.value })}
+                        className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                        placeholder="**Inclus dans le pack:**&#10;- Parfum premium 30ml&#10;- Bague ajustable&#10;- Carte d'amour personnalisée"
+                        rows={5}
+                    />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="start_date">Date de début</Label>
+                        <Input
+                            id="start_date"
+                            type="datetime-local"
+                            value={form.start_date ? new Date(form.start_date).toISOString().slice(0, 16) : ''}
+                            onChange={e => setForm({ ...form, start_date: new Date(e.target.value).toISOString() })}
+                            required
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="end_date">Date de fin</Label>
+                        <Input
+                            id="end_date"
+                            type="datetime-local"
+                            value={form.end_date ? new Date(form.end_date).toISOString().slice(0, 16) : ''}
+                            onChange={e => setForm({ ...form, end_date: new Date(e.target.value).toISOString() })}
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="priority">Priorité (plus élevé = affiché en premier)</Label>
+                        <Input
+                            id="priority"
+                            type="number"
+                            value={form.priority}
+                            onChange={e => setForm({ ...form, priority: parseInt(e.target.value) || 0 })}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label>Statut</Label>
+                        <button
+                            type="button"
+                            onClick={() => setForm({ ...form, is_active: !form.is_active })}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-md border transition-colors ${form.is_active
+                                ? 'bg-green-50 border-green-200 text-green-700'
+                                : 'bg-gray-50 border-gray-200 text-gray-700'
+                                }`}
+                        >
+                            {form.is_active ? (
+                                <>
+                                    <ToggleRight className="w-5 h-5" />
+                                    Active
+                                </>
+                            ) : (
+                                <>
+                                    <ToggleLeft className="w-5 h-5" />
+                                    Inactive
+                                </>
+                            )}
+                        </button>
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <Label>Produits applicables</Label>
+                    <p className="text-xs text-muted-foreground mb-2">
+                        Laissez vide pour appliquer à tous les produits
+                    </p>
+                    <div className="border rounded-md p-4 max-h-[200px] overflow-y-auto space-y-2">
+                        {products.map(product => (
+                            <label key={product.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                <input
+                                    type="checkbox"
+                                    checked={form.applicable_products.includes(product.id)}
+                                    onChange={() => toggleProduct(product.id)}
+                                    className="rounded border-gray-300"
+                                />
+                                <span className="text-sm">{product.name}</span>
+                                <Badge variant="outline" className="ml-auto text-xs">{product.category}</Badge>
+                            </label>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex justify-between pt-4 border-t">
+                {!isNew && (
+                    <Button type="button" variant="destructive" onClick={deleteOffer}>
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Supprimer
+                    </Button>
+                )}
+                <div className="flex gap-3 ml-auto">
+                    <Button type="button" variant="outline" onClick={onCancel}>
+                        Annuler
+                    </Button>
+                    <Button type="submit" disabled={saving}>
+                        <Save className="w-4 h-4 mr-2" />
+                        {saving ? 'Enregistrement...' : 'Enregistrer'}
+                    </Button>
+                </div>
+            </div>
+        </form>
+    );
+}
+

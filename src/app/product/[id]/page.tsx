@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Truck, RotateCcw, CreditCard, Plus, Minus, BadgePercent, ShieldCheck, Star, ChevronLeft, Snowflake, Leaf, Sun, Cloud, Heart, Gift, Sparkles } from 'lucide-react';
+import { Truck, RotateCcw, CreditCard, Plus, Minus, BadgePercent, ShieldCheck, Star, ChevronLeft, Snowflake, Leaf, Sun, Cloud } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getProducts } from '@/constants';
 import { Product } from '@/types';
@@ -45,616 +45,470 @@ export default function ProductDetail() {
 
     if (loading || !product) {
         return (
-            <div className="pt-40 pb-24 px-6 lg:px-24 flex items-center justify-center min-h-[600px] relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #FFF5F5 0%, #FFE9E9 100%)' }}>
-                <div className="absolute inset-0 opacity-10" style={{
-                    backgroundImage: `radial-gradient(circle at 20% 50%, rgba(220, 38, 38, 0.1) 0%, transparent 50%),
-                                     radial-gradient(circle at 80% 80%, rgba(217, 119, 119, 0.1) 0%, transparent 50%)`
-                }}></div>
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2" style={{ borderTopColor: '#8B1538' }}></div>
+            <div className="pt-40 pb-24 px-6 lg:px-24 flex items-center justify-center min-h-[600px]">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-black"></div>
             </div>
         );
     }
 
     // Mock rating data
     const rating = {
-        average: 4.9,
-        total: 127,
+        average: 4.5,
+        total: 50,
         distribution: [
-            { stars: 5, percentage: 85 },
-            { stars: 4, percentage: 12 },
-            { stars: 3, percentage: 2 },
-            { stars: 2, percentage: 1 },
-            { stars: 1, percentage: 0 }
+            { stars: 5, percentage: 70 },
+            { stars: 4, percentage: 20 },
+            { stars: 3, percentage: 6 },
+            { stars: 2, percentage: 2 },
+            { stars: 1, percentage: 2 }
         ]
     };
 
-    const isPack = product.category === 'pack';
-    const themeImage = product.theme || (isPack && product.images.length > 0 ? product.images[0] : null);
-
-    // Floating hearts animation
-    const FloatingHeart = ({ delay }: { delay: number }) => (
-        <motion.div
-            initial={{ opacity: 0, y: 100, x: Math.random() * 100 - 50 }}
-            animate={{
-                opacity: [0, 0.3, 0],
-                y: -200,
-                x: Math.random() * 100 - 50,
-            }}
-            transition={{
-                duration: 8,
-                delay,
-                repeat: Infinity,
-                repeatDelay: Math.random() * 5
-            }}
-            className="absolute text-rose-300"
-            style={{ left: `${Math.random() * 100}%`, bottom: 0 }}
-        >
-            <Heart size={16} fill="currentColor" />
-        </motion.div>
-    );
-
     return (
-        <div className="min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #FFF5F5 0%, #FFE9E9 50%, #FFF0F0 100%)' }}>
-            {/* Romantic Background Overlay */}
-            <div className="fixed inset-0 pointer-events-none opacity-30" style={{
-                backgroundImage: `
-                    radial-gradient(circle at 10% 20%, rgba(139, 21, 56, 0.08) 0%, transparent 40%),
-                    radial-gradient(circle at 90% 80%, rgba(217, 119, 119, 0.08) 0%, transparent 40%),
-                    radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%)
-                `
-            }}></div>
-
-            {/* Subtle floating particles */}
-            <div className="fixed inset-0 pointer-events-none overflow-hidden">
-                {[...Array(6)].map((_, i) => (
-                    <FloatingHeart key={i} delay={i * 1.5} />
-                ))}
+        <div className="pt-28 lg:pt-40 pb-16 lg:pb-24 px-4 lg:px-24">
+            {/* Breadcrumb */}
+            <div className="flex items-center space-x-2 text-sm mb-8">
+                <button onClick={() => router.push('/')} className="flex items-center text-gray-500 hover:text-black transition-colors">
+                    <ChevronLeft className="w-4 h-4" />
+                    <span>Home</span>
+                </button>
+                <span className="text-gray-300">/</span>
+                <span className="text-gray-500">Products</span>
             </div>
 
-            {/* Soft glow spots */}
-            <div className="fixed top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(212, 175, 55, 0.4) 0%, transparent 70%)' }}></div>
-            <div className="fixed bottom-0 left-0 w-96 h-96 rounded-full blur-3xl opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(139, 21, 56, 0.3) 0%, transparent 70%)' }}></div>
-
-            {isPack && themeImage && (
-                <div className="relative h-[70vh] w-full overflow-hidden">
-                    <div
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{ backgroundImage: `url(${themeImage})` }}
-                    />
-                    <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(139, 21, 56, 0.4) 0%, rgba(217, 119, 119, 0.3) 100%)' }} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
-
-                    {/* Elegant sparkles */}
-                    {[...Array(12)].map((_, i) => (
-                        <motion.div
-                            key={i}
-                            className="absolute"
-                            style={{
-                                left: `${Math.random() * 100}%`,
-                                top: `${Math.random() * 100}%`,
-                                color: '#D4AF37'
-                            }}
-                            animate={{
-                                opacity: [0, 1, 0],
-                                scale: [0.5, 1, 0.5],
-                            }}
-                            transition={{
-                                duration: 3,
-                                delay: i * 0.3,
-                                repeat: Infinity,
-                                repeatDelay: 2
-                            }}
-                        >
-                            <Sparkles size={12} />
-                        </motion.div>
-                    ))}
-
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-white pt-20">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.8 }}
-                            className="text-center"
-                        >
-                            <div className="mb-4 inline-block px-4 py-1.5 rounded-full border border-white/40 backdrop-blur-sm" style={{ background: 'rgba(212, 175, 55, 0.2)' }}>
-                                <div className="flex items-center gap-2">
-                                    <Heart size={14} fill="currentColor" className="text-rose-200" />
-                                    <span className="text-xs tracking-[0.3em] uppercase font-light">Saint-Valentin 2026</span>
-                                    <Heart size={14} fill="currentColor" className="text-rose-200" />
-                                </div>
-                            </div>
-                            <motion.h1
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2 }}
-                                className="text-4xl md:text-6xl lg:text-7xl font-serif text-center mb-4"
-                                style={{
-                                    textShadow: '0 4px 20px rgba(0,0,0,0.3)',
-                                    background: 'linear-gradient(135deg, #FFFFFF 0%, #FFD6E0 100%)',
-                                    WebkitBackgroundClip: 'text',
-                                    WebkitTextFillColor: 'transparent',
-                                    backgroundClip: 'text'
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 mb-24">
+                {/* Gallery */}
+                <div className="space-y-4">
+                    {/* Main Image */}
+                    <div className="relative aspect-square bg-white border border-gray-100 flex items-center justify-center overflow-hidden rounded-lg group">
+                        <AnimatePresence mode="wait">
+                            <motion.img
+                                key={selectedImageIndex}
+                                src={product.images[selectedImageIndex]}
+                                alt={product.name}
+                                className="w-full h-full object-contain"
+                                initial={{ opacity: 0, x: 100 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -100 }}
+                                transition={{ duration: 0.3 }}
+                                drag="x"
+                                dragConstraints={{ left: 0, right: 0 }}
+                                dragElastic={1}
+                                onDragEnd={(e, { offset, velocity }) => {
+                                    const swipe = offset.x; // horizontal swipe distance
+                                    if (swipe < -50) {
+                                        // Swipe left (next)
+                                        setSelectedImageIndex((prev) => (prev + 1) % product.images.length);
+                                    } else if (swipe > 50) {
+                                        // Swipe right (prev)
+                                        setSelectedImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
+                                    }
                                 }}
-                            >
-                                {product.name}
-                            </motion.h1>
-                            <p className="text-sm md:text-lg tracking-[0.25em] uppercase opacity-90 font-light" style={{ color: '#D4AF37' }}>
-                                Édition Love Exclusive
-                            </p>
-                        </motion.div>
-                    </div>
-                </div>
-            )}
-
-            <div className={`relative z-10 transition-all duration-300 ${isPack && themeImage ? '-mt-32 pb-24 px-4 sm:px-8 lg:px-24' : 'pt-28 lg:pt-40 pb-16 lg:pb-24 px-4 lg:px-24'}`}>
-                <div className={`${isPack && themeImage ? 'bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-6 lg:p-12 max-w-[1400px] mx-auto border border-rose-100/50' : 'max-w-7xl mx-auto'}`} style={{
-                    boxShadow: isPack && themeImage ? '0 25px 50px -12px rgba(139, 21, 56, 0.15)' : undefined
-                }}>
-                    {/* Breadcrumb */}
-                    <div className="flex items-center space-x-2 text-sm mb-8">
-                        <button onClick={() => router.push('/')} className="flex items-center transition-colors hover:text-[#8B1538]" style={{ color: '#6B7280' }}>
-                            <ChevronLeft className="w-4 h-4" />
-                            <span>Accueil</span>
-                        </button>
-                        <span className="text-rose-200">/</span>
-                        <span style={{ color: '#8B1538' }}>Valentine Édition</span>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 mb-24">
-                        {/* Gallery */}
-                        <div className="space-y-4">
-                            {/* Main Image with luxury frame */}
-                            <div className="relative aspect-square flex items-center justify-center overflow-hidden rounded-2xl group" style={{
-                                background: 'linear-gradient(135deg, #FFFFFF 0%, #FFF5F5 100%)',
-                                border: '1px solid rgba(212, 175, 55, 0.2)',
-                                boxShadow: '0 10px 40px -10px rgba(139, 21, 56, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.6)'
-                            }}>
-                                {/* Gold corner accents */}
-                                <div className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 rounded-tl-lg" style={{ borderColor: '#D4AF37' }}></div>
-                                <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 rounded-tr-lg" style={{ borderColor: '#D4AF37' }}></div>
-                                <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 rounded-bl-lg" style={{ borderColor: '#D4AF37' }}></div>
-                                <div className="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 rounded-br-lg" style={{ borderColor: '#D4AF37' }}></div>
-
-                                {/* Subtle rose petal overlay */}
-                                <div className="absolute inset-0 opacity-5 pointer-events-none" style={{
-                                    backgroundImage: `radial-gradient(circle at 30% 30%, rgba(220, 38, 38, 0.3) 0%, transparent 50%),
-                                                     radial-gradient(circle at 70% 70%, rgba(217, 119, 119, 0.3) 0%, transparent 50%)`
-                                }}></div>
-
-                                <AnimatePresence mode="wait">
-                                    <motion.img
-                                        key={selectedImageIndex}
-                                        src={product.images[selectedImageIndex]}
-                                        alt={product.name}
-                                        className="w-full h-full object-contain p-8 group-hover:scale-105 transition-transform duration-700"
-                                        initial={{ opacity: 0, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.95 }}
-                                        transition={{ duration: 0.5 }}
-                                        drag="x"
-                                        dragConstraints={{ left: 0, right: 0 }}
-                                        dragElastic={1}
-                                        onDragEnd={(e, { offset, velocity }) => {
-                                            const swipe = offset.x;
-                                            if (swipe < -50) {
-                                                setSelectedImageIndex((prev) => (prev + 1) % product.images.length);
-                                            } else if (swipe > 50) {
-                                                setSelectedImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
-                                            }
-                                        }}
-                                    />
-                                </AnimatePresence>
-
-                                {/* Luxury badge */}
-                                <div className="absolute top-6 left-6 px-3 py-1.5 rounded-full backdrop-blur-md text-xs font-semibold tracking-wider" style={{
-                                    background: 'linear-gradient(135deg, rgba(139, 21, 56, 0.9) 0%, rgba(127, 29, 29, 0.9) 100%)',
-                                    color: '#FFFFFF',
-                                    boxShadow: '0 4px 15px rgba(139, 21, 56, 0.4)'
-                                }}>
-                                    <div className="flex items-center gap-1.5">
-                                        <Gift size={12} />
-                                        VALENTINE GIFT
-                                    </div>
-                                </div>
-
-                                {/* Image Counter */}
-                                {product.images.length > 1 && (
-                                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 backdrop-blur-md px-4 py-2 rounded-full flex items-center space-x-2 z-10" style={{
-                                        background: 'rgba(139, 21, 56, 0.8)',
-                                        border: '1px solid rgba(212, 175, 55, 0.3)'
-                                    }}>
-                                        <div className="flex space-x-1">
-                                            {product.images.map((_, i) => (
-                                                <div
-                                                    key={i}
-                                                    className={`h-1.5 rounded-full transition-all ${i === selectedImageIndex ? 'w-6 bg-[#D4AF37]' : 'w-1.5 bg-white/40'}`}
-                                                />
-                                            ))}
-                                        </div>
-                                        <span className="text-xs font-medium text-white">{selectedImageIndex + 1} / {product.images.length}</span>
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Thumbnails with gold frames */}
-                            {product.images.length > 1 && (
-                                <div className="grid grid-cols-4 sm:grid-cols-3 gap-2 sm:gap-3">
-                                    {product.images.map((img, i) => (
-                                        <button
+                            />
+                        </AnimatePresence>
+                        {/* Image Counter */}
+                        {product.images.length > 1 && (
+                            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full flex items-center space-x-2 z-10">
+                                <div className="flex space-x-1">
+                                    {product.images.map((_, i) => (
+                                        <div
                                             key={i}
-                                            onClick={() => setSelectedImageIndex(i)}
-                                            className={`aspect-square rounded-lg cursor-pointer transition-all overflow-hidden group ${i === selectedImageIndex
-                                                ? 'shadow-lg'
-                                                : 'hover:border-rose-300'
+                                            className={`w-1.5 h-1.5 rounded-full transition-all ${i === selectedImageIndex ? 'bg-white w-4' : 'bg-white/40'
                                                 }`}
-                                            style={{
-                                                background: 'linear-gradient(135deg, #FFFFFF 0%, #FFF8F8 100%)',
-                                                border: i === selectedImageIndex ? '2px solid #D4AF37' : '2px solid rgba(212, 175, 55, 0.2)',
-                                                boxShadow: i === selectedImageIndex ? '0 4px 15px rgba(212, 175, 55, 0.3)' : undefined
-                                            }}
-                                        >
-                                            <img
-                                                src={img}
-                                                className={`w-full h-full object-contain p-2 transition-all ${i === selectedImageIndex ? 'opacity-100 scale-110' : 'opacity-60 group-hover:opacity-100'
-                                                    }`}
-                                                alt={`${product.name} view ${i + 1}`}
-                                            />
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Info */}
-                        <div className="space-y-6">
-                            <div>
-                                {/* Luxury Rating */}
-                                <div className="flex items-center space-x-2 mb-3">
-                                    <div className="flex items-center">
-                                        {[1, 2, 3, 4, 5].map((star) => (
-                                            <Star
-                                                key={star}
-                                                className="w-5 h-5"
-                                                fill={star <= Math.floor(rating.average) ? '#D4AF37' : 'none'}
-                                                style={{ color: star <= Math.floor(rating.average) ? '#D4AF37' : '#E5E7EB' }}
-                                            />
-                                        ))}
-                                    </div>
-                                    <span className="text-sm font-medium" style={{ color: '#8B1538' }}>
-                                        {rating.average} ({rating.total} avis vérifiés)
-                                    </span>
-                                </div>
-
-                                {/* Title with gradient */}
-                                <h1 className="text-3xl lg:text-5xl font-serif mb-4 uppercase tracking-tight leading-tight" style={{
-                                    background: 'linear-gradient(135deg, #8B1538 0%, #A0153E 50%, #D4AF37 100%)',
-                                    WebkitBackgroundClip: 'text',
-                                    WebkitTextFillColor: 'transparent',
-                                    backgroundClip: 'text'
-                                }}>
-                                    {product.name}
-                                </h1>
-
-                                {/* Valentine tagline */}
-                                <p className="text-lg italic mb-4" style={{ color: '#9CA3AF' }}>
-                                    L'essence de l'amour éternel
-                                </p>
-
-                                <div className="flex items-center space-x-4 mb-4">
-                                    <span className="text-4xl font-bold" style={{ color: '#8B1538' }}>
-                                        {product.price.toFixed(2)} DH
-                                    </span>
-                                    {product.originalPrice && (
-                                        <>
-                                            <span className="text-xl text-gray-400 line-through">{product.originalPrice.toFixed(2)} DH</span>
-                                            <span className="px-3 py-1 rounded-full text-xs font-bold text-white" style={{ background: 'linear-gradient(135deg, #8B1538 0%, #A0153E 100%)' }}>
-                                                SAVE {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
-                                            </span>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Description with decorative line */}
-                            <div className="border-t border-b py-6" style={{ borderColor: 'rgba(212, 175, 55, 0.3)' }}>
-                                <div className="flex items-center gap-2 mb-3">
-                                    <div className="h-px flex-1" style={{ background: 'linear-gradient(to right, transparent, #D4AF37, transparent)' }}></div>
-                                    <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: '#8B1538' }}>
-                                        L'Histoire d'Amour
-                                    </h3>
-                                    <div className="h-px flex-1" style={{ background: 'linear-gradient(to right, transparent, #D4AF37, transparent)' }}></div>
-                                </div>
-                                <p className="text-gray-700 text-sm leading-relaxed">
-                                    {product.description || "Une composition envoûtante qui capture l'essence même de la passion. Créée pour les moments intimes et les déclarations d'amour, cette fragrance sophistiquée révèle un univers olfactif romantique et captivant."}
-                                </p>
-                            </div>
-
-                            {/* Notes - Keep original pyramid but with Valentine colors */}
-                            {product.notes && product.notes.length > 0 && (
-                                <div className="border-b pb-6" style={{ borderColor: 'rgba(212, 175, 55, 0.3)' }}>
-                                    <div className="flex items-center space-x-2 mb-4">
-                                        <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: '#8B1538' }}>
-                                            Notes Olfactives
-                                        </h3>
-                                        <Heart size={14} fill="#D4AF37" color="#D4AF37" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        {product.notes.slice(0, 6).map((note, idx) => {
-                                            const widths = ['100%', '95%', '90%', '85%', '80%', '75%'];
-                                            return (
-                                                <div key={idx} className="flex items-center space-x-3">
-                                                    <div className="w-6 h-6 rounded-full shrink-0" style={{
-                                                        background: 'linear-gradient(135deg, #8B1538 0%, #A0153E 100%)',
-                                                        boxShadow: '0 2px 8px rgba(139, 21, 56, 0.3)'
-                                                    }}></div>
-                                                    <div className="flex-1">
-                                                        <div
-                                                            className="border rounded-full px-4 py-2 transition-all flex items-center font-medium text-sm"
-                                                            style={{
-                                                                width: widths[idx] || '70%',
-                                                                background: 'linear-gradient(90deg, rgba(255, 245, 245, 0.8) 0%, rgba(255, 232, 232, 0.6) 100%)',
-                                                                borderColor: '#D4AF37',
-                                                                color: '#7F1D1D'
-                                                            }}
-                                                        >
-                                                            {note}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Seasons - Keep structure but Valentine themed */}
-                            {product.seasons && (
-                                <div className="border-b pb-6" style={{ borderColor: 'rgba(212, 175, 55, 0.3)' }}>
-                                    <h3 className="font-semibold text-sm uppercase tracking-wider mb-5" style={{ color: '#8B1538' }}>
-                                        Saisons
-                                    </h3>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        {[
-                                            { label: 'hiver', val: product.seasons.winter, Icon: Snowflake, color: '#9CA3AF' },
-                                            { label: 'printemps', val: product.seasons.spring, Icon: Leaf, color: '#10B981' },
-                                            { label: 'été', val: product.seasons.summer, Icon: Sun, color: '#F59E0B' },
-                                            { label: 'automne', val: product.seasons.fall, Icon: Cloud, color: '#8B1538' }
-                                        ].map((s, i) => (
-                                            <div key={i} className="flex flex-col items-center">
-                                                <div className="rounded-full p-3 mb-2" style={{
-                                                    background: `${s.color}15`
-                                                }}>
-                                                    <s.Icon className="w-6 h-6" style={{ color: s.color }} />
-                                                </div>
-                                                <span className="text-xs font-medium text-gray-700 mb-2 capitalize">{s.label}</span>
-                                                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                                    <div
-                                                        className="h-full transition-all duration-500"
-                                                        style={{ width: `${s.val}%`, backgroundColor: s.color }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Quantity & Actions */}
-                            <div className="flex items-center space-x-3 border rounded-lg w-fit" style={{ borderColor: 'rgba(212, 175, 55, 0.4)' }}>
-                                <button
-                                    onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                                    className="w-12 h-12 flex items-center justify-center hover:bg-rose-50 transition-colors"
-                                    aria-label="Decrease quantity"
-                                >
-                                    <Minus className="w-4 h-4" style={{ color: '#8B1538' }} />
-                                </button>
-                                <span className="font-semibold text-base min-w-[30px] text-center" style={{ color: '#8B1538' }}>{quantity}</span>
-                                <button
-                                    onClick={() => setQuantity(q => q + 1)}
-                                    className="w-12 h-12 flex items-center justify-center hover:bg-rose-50 transition-colors"
-                                    aria-label="Increase quantity"
-                                >
-                                    <Plus className="w-4 h-4" style={{ color: '#8B1538' }} />
-                                </button>
-                            </div>
-
-                            <div className="space-y-3 pt-2">
-                                {/* Luxury "Add to Cart" button */}
-                                <button
-                                    onClick={handleAddToCart}
-                                    className="w-full py-4 px-6 uppercase tracking-wide text-sm font-semibold transition-all duration-300 rounded-lg relative overflow-hidden group"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #FFFFFF 0%, #FFF5F5 100%)',
-                                        border: '2px solid #8B1538',
-                                        color: '#8B1538'
-                                    }}
-                                >
-                                    <span className="relative z-10 flex items-center justify-center gap-2">
-                                        <Gift size={18} />
-                                        Ajouter au Panier Cadeau
-                                    </span>
-                                    <div className="absolute inset-0 bg-gradient-to-r from-rose-50 to-red-50 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
-                                </button>
-
-                                {/* Premium "Buy Now" button */}
-                                <button
-                                    onClick={handleBuyNow}
-                                    className="w-full py-4 px-6 uppercase tracking-wide text-sm font-semibold transition-all duration-300 rounded-lg shadow-xl relative overflow-hidden group"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #8B1538 0%, #A0153E 100%)',
-                                        color: '#FFFFFF'
-                                    }}
-                                >
-                                    <span className="relative z-10 flex items-center justify-center gap-2">
-                                        <Heart size={18} fill="currentColor" />
-                                        Offrir l'Amour Maintenant
-                                    </span>
-                                    <div className="absolute inset-0 bg-gradient-to-r from-[#7F1D1D] to-[#8B1538] transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
-                                    <motion.div
-                                        className="absolute inset-0 opacity-0 group-hover:opacity-100"
-                                        animate={{
-                                            background: [
-                                                'radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.3) 0%, transparent 50%)',
-                                                'radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.3) 0%, transparent 50%)',
-                                                'radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.3) 0%, transparent 50%)'
-                                            ]
-                                        }}
-                                        transition={{ duration: 2, repeat: Infinity }}
-                                    />
-                                </button>
-                            </div>
-
-                            {/* Delivery Options with Valentine styling */}
-                            <div className="border rounded-xl p-5" style={{
-                                borderColor: 'rgba(212, 175, 55, 0.3)',
-                                background: 'linear-gradient(135deg, #FFF9F9 0%, #FFFFFF 100%)'
-                            }}>
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="font-semibold text-sm uppercase tracking-wider flex items-center gap-2" style={{ color: '#8B1538' }}>
-                                        <Sparkles size={16} style={{ color: '#D4AF37' }} />
-                                        Services Premium
-                                    </h3>
-                                </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div className="flex items-start space-x-3">
-                                        <div className="p-2 rounded-lg" style={{ background: 'rgba(139, 21, 56, 0.1)' }}>
-                                            <Gift className="w-5 h-5" style={{ color: '#8B1538' }} />
-                                        </div>
-                                        <div>
-                                            <p className="text-sm font-semibold" style={{ color: '#8B1538' }}>Emballage Luxe</p>
-                                            <p className="text-xs text-gray-600">Offert</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-start space-x-3">
-                                        <div className="p-2 rounded-lg" style={{ background: 'rgba(212, 175, 55, 0.1)' }}>
-                                            <CreditCard className="w-5 h-5" style={{ color: '#D4AF37' }} />
-                                        </div>
-                                        <div>
-                                            <p className="text-sm font-semibold" style={{ color: '#8B1538' }}>Paiement Sécurisé</p>
-                                            <p className="text-xs text-gray-600">À la livraison</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-start space-x-3">
-                                        <div className="p-2 rounded-lg" style={{ background: 'rgba(139, 21, 56, 0.1)' }}>
-                                            <Truck className="w-5 h-5" style={{ color: '#8B1538' }} />
-                                        </div>
-                                        <div>
-                                            <p className="text-sm font-semibold" style={{ color: '#8B1538' }}>Livraison Express</p>
-                                            <p className="text-xs text-gray-600">24-48h garantie</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-start space-x-3">
-                                        <div className="p-2 rounded-lg" style={{ background: 'rgba(212, 175, 55, 0.1)' }}>
-                                            <Heart className="w-5 h-5" fill="#D4AF37" style={{ color: '#D4AF37' }} />
-                                        </div>
-                                        <div>
-                                            <p className="text-sm font-semibold" style={{ color: '#8B1538' }}>Carte Personnalisée</p>
-                                            <p className="text-xs text-gray-600">Message d'amour</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Rating & Reviews Section - Same structure, Valentine colors */}
-                    <section className="mb-24 border-t pt-16" style={{ borderColor: 'rgba(212, 175, 55, 0.3)' }}>
-                        <div className="flex items-center justify-center gap-3 mb-12">
-                            <div className="h-px w-16" style={{ background: 'linear-gradient(to right, transparent, #D4AF37)' }}></div>
-                            <h2 className="text-3xl font-serif uppercase tracking-tight" style={{
-                                background: 'linear-gradient(135deg, #8B1538 0%, #D4AF37 100%)',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                backgroundClip: 'text'
-                            }}>
-                                Avis Certifiés
-                            </h2>
-                            <div className="h-px w-16" style={{ background: 'linear-gradient(to left, transparent, #D4AF37)' }}></div>
-                        </div>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                            {/* Rating Summary */}
-                            <div>
-                                <div className="flex items-end space-x-3 mb-6">
-                                    <span className="text-6xl lg:text-7xl font-bold leading-none" style={{ color: '#8B1538' }}>
-                                        {rating.average}
-                                    </span>
-                                    <span className="text-2xl pb-2" style={{ color: '#D4AF37' }}>/5</span>
-                                </div>
-                                <div className="flex items-center space-x-2 mb-2">
-                                    {[1, 2, 3, 4, 5].map((star) => (
-                                        <Star
-                                            key={star}
-                                            className="w-7 h-7"
-                                            fill={star <= Math.floor(rating.average) ? '#D4AF37' : 'none'}
-                                            style={{ color: star <= Math.floor(rating.average) ? '#D4AF37' : '#D1D5DB' }}
                                         />
                                     ))}
                                 </div>
-                                <p className="text-sm text-gray-600">({rating.total} avis vérifiés)</p>
+                                <span className="text-xs font-medium">{selectedImageIndex + 1} / {product.images.length}</span>
+                            </div>
+                        )}
+                    </div>
 
-                                {/* Rating Distribution */}
-                                <div className="mt-8 space-y-3">
-                                    {rating.distribution.map((item) => (
-                                        <div key={item.stars} className="flex items-center space-x-4">
-                                            <span className="text-sm font-medium w-4" style={{ color: '#8B1538' }}>{item.stars}</span>
-                                            <Star className="w-4 h-4" fill="#D4AF37" style={{ color: '#D4AF37' }} />
-                                            <div className="flex-1 h-2 bg-rose-100 rounded-full overflow-hidden">
-                                                <div
-                                                    className="h-full transition-all duration-500"
-                                                    style={{
-                                                        width: `${item.percentage}%`,
-                                                        background: 'linear-gradient(90deg, #8B1538 0%, #D4AF37 100%)'
-                                                    }}
-                                                />
+                    {/* Thumbnails */}
+                    {product.images.length > 1 && (
+                        <div className="grid grid-cols-4 sm:grid-cols-3 gap-2 sm:gap-3">
+                            {product.images.map((img, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setSelectedImageIndex(i)}
+                                    className={`aspect-square bg-white border-2 rounded-lg cursor-pointer transition-all overflow-hidden group ${i === selectedImageIndex
+                                        ? 'border-black shadow-md'
+                                        : 'border-gray-200 hover:border-gray-400'
+                                        }`}
+                                >
+                                    <img
+                                        src={img}
+                                        className={`w-full h-full object-contain transition-all ${i === selectedImageIndex ? 'opacity-100' : 'opacity-60 group-hover:opacity-100'
+                                            }`}
+                                        alt={`${product.name} view ${i + 1}`}
+                                    />
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Info */}
+                <div className="space-y-6">
+                    <div>
+                        {/* Star Rating */}
+                        <div className="flex items-center space-x-2 mb-2">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                    key={star}
+                                    className={`w-4 h-4 ${star <= Math.floor(rating.average)
+                                        ? 'fill-amber-400 text-amber-400'
+                                        : 'fill-none text-gray-300'
+                                        }`}
+                                />
+                            ))}
+                            <span className="text-sm text-gray-600">({rating.total} avis)</span>
+                        </div>
+                        <h1 className="text-3xl lg:text-5xl font-serif mb-3 uppercase tracking-tight leading-tight">{product.name}</h1>
+                        <div className="flex items-center space-x-4 mb-4">
+                            <span className="text-3xl font-bold text-black">dh {product.price.toFixed(2)}</span>
+                            {product.originalPrice && (
+                                <span className="text-lg text-gray-400 line-through">dh {product.originalPrice.toFixed(2)}</span>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Description */}
+                    <div className="border-t border-b border-gray-200 py-4">
+                        <button className="w-full flex items-center justify-between text-left group">
+                            <h3 className="font-semibold text-sm uppercase tracking-wider">Description</h3>
+                        </button>
+                        <p className="text-gray-600 text-sm leading-relaxed mt-3">
+                            {product.description || "Une fragrance aromatique fougère pour homme. Lancée en 2015, cette création sophistiquée révèle un univers olfactif complexe et captivant."}
+                        </p>
+                    </div>
+
+                    {/* Main Notes - Pyramid of Composition */}
+                    <div className="border-b border-gray-200 pb-6">
+                        <div className="flex items-center space-x-2 mb-4">
+                            <h3 className="font-semibold text-sm uppercase tracking-wider">Pyramide de composition</h3>
+                            <span className="text-gray-400 text-xs">ⓘ</span>
+                        </div>
+                        <div className="space-y-2">
+                            {(product.notes || ['Fresh Spicy', 'Amber', 'Citrus', 'Aromatic', 'Musky', 'Woody', 'Lavender', 'Herbal', 'Warm-Spicy']).map((note, idx) => {
+                                // Precise semantic color mapping based on user guide
+                                const getNoteColor = (noteName: string) => {
+                                    const name = noteName.toLowerCase();
+
+                                    // 🍨 GOURMAND & SWEET
+                                    if (name.includes('vanilla') || name.includes('vanille')) return { bg: '#F5F5DC', border: '#E8E8C8', text: '#5D5D3C' }; // Beige / Cream
+                                    if (name.includes('caramel')) return { bg: '#C68E17', border: '#A67310', text: '#FFFFFF' }; // Golden Brown
+                                    if (name.includes('honey') || name.includes('miel')) return { bg: '#FFC30B', border: '#E0A800', text: '#5C4300' }; // Amber / Warm Gold
+                                    if (name.includes('chocolate') || name.includes('cocoa') || name.includes('chocolat') || name.includes('cacao')) return { bg: '#3B2F2F', border: '#2A1F1F', text: '#FFFFFF' }; // Dark Brown
+                                    if (name.includes('almond') || name.includes('amande')) return { bg: '#EADDCA', border: '#DCC3A8', text: '#5E4B35' }; // Light Beige / Sand
+                                    if (name.includes('coffee') || name.includes('café')) return { bg: '#4B3621', border: '#362415', text: '#FFFFFF' }; // Espresso Brown
+                                    if (name.includes('tonka')) return { bg: '#E1C699', border: '#D1B07A', text: '#58421F' }; // Warm beige/brown
+
+                                    // 🌳 WOODY
+                                    if (name.includes('sandalwood') || name.includes('santal')) return { bg: '#D2B48C', border: '#C19D6F', text: '#FFFFFF' }; // Creamy Tan
+                                    if (name.includes('cedar') || name.includes('cèdre')) return { bg: '#A52A2A', border: '#8A2020', text: '#FFFFFF' }; // Reddish Brown
+                                    if (name.includes('oud') || name.includes('aoud')) return { bg: '#2B2117', border: '#17110C', text: '#FFFFFF' }; // Dark Brown / Almost Black
+                                    if (name.includes('vetiver')) return { bg: '#556B2F', border: '#425424', text: '#FFFFFF' }; // Olive Green / Earthy Brown
+                                    if (name.includes('patchouli')) return { bg: '#3E3226', border: '#292119', text: '#FFFFFF' }; // Dark Green / Brown
+                                    if (name.includes('wood') || name.includes('bois')) return { bg: '#8B5A2B', border: '#704822', text: '#FFFFFF' }; // General Wood
+
+                                    // 🌸 FLORAL
+                                    if (name.includes('rose')) return { bg: '#FFC0CB', border: '#FF91A4', text: '#8B0000' }; // Pink / Red
+                                    if (name.includes('jasmine') || name.includes('jasmin')) return { bg: '#FFFFF0', border: '#F0F0D8', text: '#66664D' }; // White / Soft Yellow
+                                    if (name.includes('orange blossom') || name.includes('fleur d\'oranger') || name.includes('neroli')) return { bg: '#FFF5EE', border: '#FFE4D5', text: '#8B4500' }; // White + Touch of Orange
+                                    if (name.includes('ylang')) return { bg: '#FFD700', border: '#DBB800', text: '#665500' }; // Golden Yellow
+                                    if (name.includes('iris')) return { bg: '#B6B6B4', border: '#9E9E9C', text: '#FFFFFF' }; // Lavender / Powdery Grey
+                                    if (name.includes('violet') || name.includes('violette')) return { bg: '#8F00FF', border: '#7300D1', text: '#FFFFFF' }; // Violet Purple
+                                    if (name.includes('lavender') || name.includes('lavande')) return { bg: '#E6E6FA', border: '#CFCFCF', text: '#4B0082' }; // Lavender
+                                    if (name.includes('peony') || name.includes('pivoine')) return { bg: '#FFC0CB', border: '#FF91A4', text: '#8B0000' }; // Light Pink
+                                    if (name.includes('floral')) return { bg: '#FFB7C5', border: '#FF99AC', text: '#8B0000' }; // General Floral
+
+                                    // 🍋 CITRUS
+                                    if (name.includes('bergamot') || name.includes('bergamote')) return { bg: '#ADFF2F', border: '#8FDE0B', text: '#406600' }; // Yellow-Green
+                                    if (name.includes('lemon') || name.includes('citron')) return { bg: '#FFF700', border: '#DDD600', text: '#666300' }; // Bright Yellow
+                                    if (name.includes('orange') && !name.includes('blossom')) return { bg: '#FFA500', border: '#DB8D00', text: '#FFFFFF' }; // Orange
+                                    if (name.includes('grapefruit') || name.includes('pamplemousse')) return { bg: '#FF7F50', border: '#E36436', text: '#FFFFFF' }; // Coral / Pink
+                                    if (name.includes('citrus') || name.includes('agrume')) return { bg: '#FFD700', border: '#DBB800', text: '#665500' }; // General Citrus
+
+                                    // 🌿 FRESH / GREEN
+                                    if (name.includes('mint') || name.includes('menthe')) return { bg: '#98FF98', border: '#7DDE7D', text: '#005400' }; // Bright Green
+                                    if (name.includes('basil') || name.includes('basilic')) return { bg: '#006400', border: '#004700', text: '#FFFFFF' }; // Deep Green
+                                    if (name.includes('green tea') || name.includes('thé vert')) return { bg: '#98FB98', border: '#7FDE7F', text: '#004700' }; // Pale Green
+                                    if (name.includes('fresh') || name.includes('frais') || name.includes('green') || name.includes('vert')) return { bg: '#228B22', border: '#196919', text: '#FFFFFF' }; // Forest Green
+                                    if (name.includes('herbal') || name.includes('herbs')) return { bg: '#556B2F', border: '#425424', text: '#FFFFFF' }; // Herbal Green
+
+                                    // 🌫️ RESINOUS / AMBER
+                                    if (name.includes('amber') || name.includes('ambre')) return { bg: '#FFBF00', border: '#DBA400', text: '#5E4600' }; // Golden Amber
+                                    if (name.includes('benzoin')) return { bg: '#A0522D', border: '#854223', text: '#FFFFFF' }; // Caramel Brown
+                                    if (name.includes('myrrh') || name.includes('myrrhe')) return { bg: '#8B4513', border: '#6E360F', text: '#FFFFFF' }; // Dark Amber
+                                    if (name.includes('incense') || name.includes('encens')) return { bg: '#708090', border: '#5A6775', text: '#FFFFFF' }; // Smoky Grey
+                                    if (name.includes('resin')) return { bg: '#CD853F', border: '#B07134', text: '#FFFFFF' }; // Amber Resin
+
+                                    // 🧴 MUSKS & MODERN
+                                    if (name.includes('white musk') || name.includes('musc blanc')) return { bg: '#F2F3F4', border: '#DCDDDE', text: '#666666' }; // Soft White
+                                    if (name.includes('musk') || name.includes('musc')) return { bg: '#D2B48C', border: '#B99C76', text: '#FFFFFF' }; // Beige / Tan
+                                    if (name.includes('ambroxan')) return { bg: '#C0C0C0', border: '#A6A6A6', text: '#4D4D4D' }; // Metallic Grey
+                                    if (name.includes('cashmeran')) return { bg: '#8B8589', border: '#706B6E', text: '#FFFFFF' }; // Soft Brown-Grey
+                                    if (name.includes('leather') || name.includes('cuir')) return { bg: '#8B4500', border: '#6E3600', text: '#FFFFFF' }; // Brown Leather
+
+                                    // 🌶️ SPICY
+                                    if (name.includes('spicy') || name.includes('spice') || name.includes('épic')) return { bg: '#8B0000', border: '#660000', text: '#FFFFFF' }; // Warm Spice Red
+                                    if (name.includes('pepper') || name.includes('poivre')) return { bg: '#4A4A4A', border: '#333333', text: '#FFFFFF' }; // Pepper Black/Grey
+                                    if (name.includes('cinnamon') || name.includes('cannelle')) return { bg: '#D2691E', border: '#B55A19', text: '#FFFFFF' }; // Cinnamon
+
+                                    // 🍇 FRUITY
+                                    if (name.includes('fruit') || name.includes('berry') || name.includes('baie')) return { bg: '#DDA0DD', border: '#C086C0', text: '#4B0082' }; // Plum / Berry
+                                    if (name.includes('apple') || name.includes('pomme')) return { bg: '#FF4500', border: '#D63900', text: '#FFFFFF' }; // Red Apple
+                                    if (name.includes('peach') || name.includes('pêche')) return { bg: '#FFDAB9', border: '#E6C3A3', text: '#5C4023' }; // Peach
+                                    if (name.includes('lyche') || name.includes('litchi')) return { bg: '#F8C3CD', border: '#E0AAB4', text: '#5C2E36' }; // Lychee Pink
+
+                                    // 💧 AQUATIC
+                                    if (name.includes('aqua') || name.includes('marine') || name.includes('ocean')) return { bg: '#00FFFF', border: '#00D6D6', text: '#005C5C' }; // Water Blue
+
+                                    // 🌰 AROMATIC
+                                    if (name.includes('aromatic') || name.includes('aromatique')) return { bg: '#00A86B', border: '#008C59', text: '#FFFFFF' }; // Jade / Emerald
+
+                                    // Default
+                                    return { bg: '#E5E5E5', border: '#D4D4D4', text: '#404040' }; // Neutral Gray
+                                };
+
+                                // Calculate width - first notes get more prominence
+                                const widths = ['100%', '95%', '90%', '85%', '80%', '75%', '70%', '65%', '60%'];
+
+                                const style = getNoteColor(note);
+
+                                return (
+                                    <div key={idx} className="flex items-center space-x-3">
+                                        <div className="w-6 h-6 rounded-full bg-gray-200 border border-gray-300 shrink-0"></div>
+                                        <div className="flex-1">
+                                            <div
+                                                className="border rounded-full px-4 py-2 transition-all flex items-center"
+                                                style={{
+                                                    width: widths[idx] || '60%',
+                                                    backgroundColor: style.bg,
+                                                    borderColor: style.border,
+                                                }}
+                                            >
+                                                <span
+                                                    className="text-sm font-medium"
+                                                    style={{ color: style.text }}
+                                                >
+                                                    {note}
+                                                </span>
                                             </div>
-                                            <span className="text-xs text-gray-500 w-12 text-right">{item.percentage}%</span>
                                         </div>
-                                    ))}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Seasons */}
+                    {product.seasons && (
+                        <div className="border-b border-gray-200 pb-6">
+                            <h3 className="font-semibold text-sm uppercase tracking-wider mb-5">Saisons</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {[
+                                    {
+                                        label: 'hiver',
+                                        val: product.seasons.winter,
+                                        Icon: Snowflake,
+                                        bgColor: 'rgba(120, 214, 240, 0.3)', // #78D6F0 light
+                                        barColor: '#78D6F0',
+                                        textColor: 'text-sky-600'
+                                    },
+                                    {
+                                        label: 'printemps',
+                                        val: product.seasons.spring,
+                                        Icon: Leaf,
+                                        bgColor: 'rgba(201, 238, 192, 0.3)', // #C9EEC0 light
+                                        barColor: '#C9EEC0',
+                                        textColor: 'text-green-600'
+                                    },
+                                    {
+                                        label: 'été',
+                                        val: product.seasons.summer,
+                                        Icon: Sun,
+                                        bgColor: 'rgba(252, 244, 135, 0.3)', // #FCF487 light
+                                        barColor: '#FCF487',
+                                        textColor: 'text-yellow-600'
+                                    },
+                                    {
+                                        label: 'automne',
+                                        val: product.seasons.fall,
+                                        Icon: Cloud,
+                                        bgColor: 'rgba(249, 190, 110, 0.3)', // #F9BE6E light
+                                        barColor: '#F9BE6E',
+                                        textColor: 'text-orange-600'
+                                    }
+                                ].map((s, i) => (
+                                    <div key={i} className="flex flex-col items-center">
+                                        <div className="rounded-full p-3 mb-2" style={{ backgroundColor: s.bgColor }}>
+                                            <s.Icon className={`w-6 h-6 ${s.textColor}`} />
+                                        </div>
+                                        <span className="text-xs font-medium text-gray-700 mb-2 capitalize">{s.label}</span>
+                                        <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                            <div
+                                                className="h-full transition-all duration-500"
+                                                style={{ width: `${s.val}%`, backgroundColor: s.barColor }}
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Quantity & Actions */}
+                    <div className="flex items-center space-x-3 border border-gray-300 rounded w-fit">
+                        <button
+                            onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                            className="w-12 h-12 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                            aria-label="Decrease quantity"
+                        >
+                            <Minus className="w-4 h-4" />
+                        </button>
+                        <span className="font-semibold text-base min-w-[30px] text-center">{quantity}</span>
+                        <button
+                            onClick={() => setQuantity(q => q + 1)}
+                            className="w-12 h-12 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                            aria-label="Increase quantity"
+                        >
+                            <Plus className="w-4 h-4" />
+                        </button>
+                    </div>
+
+                    <div className="space-y-3 pt-2">
+                        <button
+                            onClick={handleAddToCart}
+                            className="w-full py-4 px-6 bg-white text-black border-2 border-black uppercase tracking-wide text-sm font-semibold hover:bg-black hover:text-white transition-all duration-300 rounded"
+                        >
+                            Ajouter au panier
+                        </button>
+                        <button
+                            onClick={handleBuyNow}
+                            className="w-full py-4 px-6 bg-black text-white uppercase tracking-wide text-sm font-semibold hover:bg-gray-800 transition-all duration-300 rounded shadow-lg"
+                        >
+                            Acheter maintenant
+                        </button>
+                    </div>
+
+                    {/* Delivery Options */}
+                    <div className="border border-gray-200 rounded-lg p-5">
+                        <button className="w-full flex items-center justify-between mb-4">
+                            <h3 className="font-semibold text-sm uppercase tracking-wider">Options de livraison</h3>
+                            <ChevronLeft className="w-4 h-4 transform rotate-90" />
+                        </button>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="flex items-start space-x-3">
+                                <div className="bg-gray-100 p-2 rounded">
+                                    <BadgePercent className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium">Réduction</p>
+                                    <p className="text-xs text-gray-500">Remise 10%</p>
                                 </div>
                             </div>
-
-                            {/* Review CTA */}
-                            <div className="flex flex-col justify-center items-center text-center p-8 rounded-2xl" style={{
-                                background: 'linear-gradient(135deg, #FFF5F5 0%, #FFE9E9 100%)',
-                                border: '1px solid rgba(212, 175, 55, 0.2)'
-                            }}>
-                                <Heart size={48} className="mb-4" fill="#D4AF37" style={{ color: '#D4AF37' }} />
-                                <h3 className="text-2xl font-serif uppercase tracking-tight mb-4" style={{ color: '#8B1538' }}>
-                                    Partagez Votre Histoire
-                                </h3>
-                                <p className="text-gray-600 text-sm mb-6 max-w-sm">
-                                    Votre avis aide d'autres âmes romantiques à trouver le parfum parfait
-                                </p>
-                                <button className="px-8 py-3 uppercase tracking-wide text-sm font-semibold transition-all duration-300 rounded-lg" style={{
-                                    background: 'linear-gradient(135deg, #8B1538 0%, #A0153E 100%)',
-                                    color: '#FFFFFF',
-                                    boxShadow: '0 4px 15px rgba(139, 21, 56, 0.3)'
-                                }}>
-                                    Écrire un Avis
-                                </button>
+                            <div className="flex items-start space-x-3">
+                                <div className="bg-gray-100 p-2 rounded">
+                                    <CreditCard className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium">Paiement</p>
+                                    <p className="text-xs text-gray-500">Paiement à la livraison</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start space-x-3">
+                                <div className="bg-gray-100 p-2 rounded">
+                                    <Truck className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium">Délai de livraison</p>
+                                    <p className="text-xs text-gray-500">3–4 jours ouvrables</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start space-x-3">
+                                <div className="bg-gray-100 p-2 rounded">
+                                    <ShieldCheck className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium">Retour & Garantie</p>
+                                    <p className="text-xs text-gray-500">Retour facile 7 jours</p>
+                                </div>
                             </div>
                         </div>
-                    </section>
-
-                    {/* Recommendations - Same structure */}
-                    <section>
-                        <div className="flex flex-col md:flex-row justify-between items-end mb-12">
-                            <div>
-                                <span className="text-xs font-bold uppercase tracking-wider mb-2 block" style={{ color: '#D4AF37' }}>
-                                    Découvrez Également
-                                </span>
-                                <h2 className="text-3xl font-serif uppercase tracking-tight" style={{ color: '#8B1538' }}>
-                                    Collection Valentine
-                                </h2>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                            {related.map(p => <ProductCard key={p.id} product={p} />)}
-                        </div>
-                    </section>
+                    </div>
                 </div>
             </div>
+
+            {/* Rating & Reviews */}
+            <section className="mb-24 border-t border-gray-100 pt-16">
+                <h2 className="text-3xl font-serif uppercase tracking-tight mb-12">Notes & Avis</h2>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                    {/* Rating Summary */}
+                    <div>
+                        <div className="flex items-end space-x-3 mb-6">
+                            <span className="text-5xl lg:text-7xl font-bold leading-none">{rating.average}</span>
+                            <span className="text-xl lg:text-2xl text-gray-400 pb-2">/5</span>
+                        </div>
+                        <div className="flex items-center space-x-2 mb-2">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                    key={star}
+                                    className={`w-6 h-6 ${star <= Math.floor(rating.average)
+                                        ? 'fill-amber-400 text-amber-400'
+                                        : star - rating.average < 1
+                                            ? 'fill-amber-400 text-amber-400'
+                                            : 'fill-none text-gray-300'
+                                        }`}
+                                />
+                            ))}
+                        </div>
+                        <p className="text-sm text-gray-500">({rating.total} Nouveaux avis)</p>
+
+                        {/* Rating Distribution */}
+                        <div className="mt-8 space-y-3">
+                            {rating.distribution.map((item) => (
+                                <div key={item.stars} className="flex items-center space-x-4">
+                                    <span className="text-sm font-medium w-4">{item.stars}</span>
+                                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                                    <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div
+                                            className="h-full bg-amber-400 transition-all duration-500"
+                                            style={{ width: `${item.percentage}%` }}
+                                        />
+                                    </div>
+                                    <span className="text-xs text-gray-500 w-12 text-right">{item.percentage}%</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Review Form */}
+                    <div className="flex flex-col justify-center">
+                        <h3 className="text-2xl font-serif uppercase tracking-tight mb-4">Donnez votre avis</h3>
+                        <p className="text-gray-600 text-sm mb-6">
+                            Partagez votre expérience avec d'autres clients
+                        </p>
+                        <button className="w-full py-4 px-6 bg-white text-black border-2 border-black uppercase tracking-wide text-sm font-semibold hover:bg-black hover:text-white transition-all duration-300 rounded">
+                            Écrire un avis client
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            {/* Recommendations */}
+            <section>
+                <div className="flex flex-col md:flex-row justify-between items-end mb-12">
+                    <div>
+                        <span className="text-xs text-black font-bold uppercase tracking-wider mb-2 block">Suggestions</span>
+                        <h2 className="text-3xl font-serif uppercase tracking-tight">Complétez votre collection</h2>
+                    </div>
+                </div>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                    {related.map(p => <ProductCard key={p.id} product={p} />)}
+                </div>
+            </section>
         </div>
     );
 }

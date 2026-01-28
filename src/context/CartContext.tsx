@@ -1,11 +1,11 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { CartItem, Product } from '@/types';
+import { CartItem, Product, ProductCustomization } from '@/types';
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: Product, quantity: number) => void;
+  addToCart: (product: Product, quantity: number, customization?: ProductCustomization) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -39,7 +39,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('ag_fragrance_cart', JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (product: Product, quantity: number) => {
+  const addToCart = (product: Product, quantity: number, customization?: ProductCustomization) => {
     const now = Date.now();
     // Debounce: verify if the same product was added less than 500ms ago
     if (lastAddRef.current &&
@@ -49,13 +49,20 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     lastAddRef.current = { id: product.id, time: now };
     setCart(prev => {
-      const existing = prev.find(item => item.id === product.id);
+      // Find existing item with same product ID AND same customization
+      const existing = prev.find(item =>
+        item.id === product.id &&
+        JSON.stringify(item.customization) === JSON.stringify(customization)
+      );
+
       if (existing) {
         return prev.map(item =>
-          item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
+          item.id === product.id && JSON.stringify(item.customization) === JSON.stringify(customization)
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
         );
       }
-      return [...prev, { ...product, quantity }];
+      return [...prev, { ...product, quantity, customization }];
     });
     setIsCartOpen(true);
   };

@@ -236,8 +236,8 @@ export default function Checkout() {
                                 <h2 className="text-xl font-serif mb-8 uppercase tracking-tighter">Votre Commande</h2>
 
                                 <div className="space-y-6 max-h-[400px] overflow-y-auto no-scrollbar pr-2 mb-8 border-b border-gray-100 pb-8">
-                                    {cart.map((item) => (
-                                        <div key={item.id} className="flex gap-4">
+                                    {cart.map((item, index) => (
+                                        <div key={`${item.id}-${index}`} className="flex gap-4">
                                             <div className="w-20 h-24 bg-gray-50 flex-shrink-0 border border-gray-200 overflow-hidden rounded-sm">
                                                 <img
                                                     src={item.images?.[0] || '/placeholder.png'}
@@ -248,6 +248,25 @@ export default function Checkout() {
                                             <div className="flex-1">
                                                 <h4 className="text-xs font-bold uppercase tracking-tight line-clamp-1">{item.name}</h4>
                                                 <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1">{item.brand}</p>
+
+                                                {item.customization && (
+                                                    <div className="mt-2 pt-2 border-t border-gray-100 space-y-1 text-[10px] text-gray-600">
+                                                        {item.customization.ringSize && (
+                                                            <div>✦ Taille: {item.customization.ringSize}</div>
+                                                        )}
+                                                        {item.customization.perfumeType && (
+                                                            <div>
+                                                                ✦ Parfum: {item.customization.perfumeType === 'other'
+                                                                    ? item.customization.customPerfumeName
+                                                                    : item.customization.perfumeType}
+                                                            </div>
+                                                        )}
+                                                        {item.customization.loveLetterEnabled && (
+                                                            <div>💌 Pour: {item.customization.loveLetterRecipientName}</div>
+                                                        )}
+                                                    </div>
+                                                )}
+
                                                 <div className="flex justify-between items-center mt-2">
                                                     <span className="text-[10px] font-medium text-gray-500">Qté: {item.quantity}</span>
                                                     <span className="text-xs font-bold">{(item.price * item.quantity).toFixed(2)} dh</span>

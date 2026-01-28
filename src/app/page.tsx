@@ -4,6 +4,7 @@ import React from 'react';
 
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
+import SpecialOfferBanner from '@/components/SpecialOfferBanner';
 import { getProducts, BRANDS } from '@/constants';
 import { Product } from '@/types';
 import { InfiniteSlider } from "@/components/ui/infinite-slider";
@@ -88,6 +89,9 @@ export default function Home() {
                 </div>
             </section>
 
+            {/* Special Offer Banner - Valentine's */}
+            <SpecialOfferBanner />
+
             {/* Marquee */}
             <div className="bg-black py-4 overflow-hidden border-y border-white/20">
                 <div className="flex whitespace-nowrap animate-marquee">
@@ -98,6 +102,60 @@ export default function Home() {
                     ))}
                 </div>
             </div>
+
+
+            {/* Valentine's Pack Highlight - Auto-hides after Feb 14, 2026 */}
+            {(() => {
+                const valentinePack = products.find(p => p.id === 'valentine-pack-2026' || (p.category === 'pack' && p.name.toLowerCase().includes('valentine')));
+                const isBeforeValentines = new Date() < new Date('2026-02-15T00:00:00');
+
+                if (!valentinePack || !isBeforeValentines) return null;
+
+                return (
+                    <section className="py-12 md:py-16 px-4 md:px-6 lg:px-24 bg-gradient-to-b from-rose-50/30 to-white border-b border-rose-100/50">
+                        <div className="max-w-6xl mx-auto">
+                            {/* Header */}
+                            <div className="text-center mb-8 md:mb-10">
+                                <div className="flex items-center justify-center gap-2 mb-2">
+                                    <span className="text-2xl md:text-3xl">💝</span>
+                                    <h2 className="text-xl md:text-3xl font-serif font-bold uppercase tracking-tight">
+                                        Pack Spécial Saint-Valentin
+                                    </h2>
+                                    <span className="text-2xl md:text-3xl">💝</span>
+                                </div>
+                                <p className="text-xs md:text-sm text-gray-600 max-w-2xl mx-auto">
+                                    Le cadeau parfait pour célébrer l'amour • Offre limitée jusqu'au 14 février
+                                </p>
+                            </div>
+
+                            {/* Product Card - Centered */}
+                            <div className="max-w-sm mx-auto">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5 }}
+                                    className="relative"
+                                >
+                                    {/* "Offre Limitée" Badge */}
+                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                                        <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-rose-500 to-pink-600 text-white text-[10px] md:text-xs font-bold uppercase tracking-wider rounded-full shadow-lg">
+                                            ✨ Offre Limitée ✨
+                                        </span>
+                                    </div>
+
+                                    {/* Actual Product Card with border highlight */}
+                                    <div className="p-1 bg-gradient-to-br from-rose-200 via-pink-200 to-rose-200 rounded-lg">
+                                        <div className="bg-white rounded-md overflow-hidden">
+                                            <ProductCard product={valentinePack} />
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            </div>
+                        </div>
+                    </section>
+                );
+            })()}
+
 
             {/* Best Sellers Homme */}
             <section className="py-16 md:py-24 px-4 md:px-6 lg:px-24">
@@ -129,7 +187,7 @@ export default function Home() {
                 {[
                     { title: "PARFUMS HOMMES", img: "/assets/hommes.jpg", href: "/collections/homme" },
                     { title: "PARFUMS FEMMES", img: "/assets/femmes2.jpg", href: "/collections/femme" },
-                    { title: "PACK", img: "/assets/pak.jpg", href: "/collections/complet" }
+                    { title: "PACK", img: "/assets/pak.jpg", href: "/collections/packs" }
                 ].map((item, idx) => (
                     <Link href={item.href} key={idx} className="relative h-[300px] md:h-[600px] overflow-hidden group cursor-pointer block">
                         <img

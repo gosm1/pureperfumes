@@ -53,8 +53,17 @@ export interface Product {
   theme_config?: ThemeConfig;
 }
 
+export interface ProductCustomization {
+  ringSize?: number;              // e.g., 6, 7, 8, 9, 10, 11, 12
+  perfumeType?: string;            // 'miss-dior' | 'jadore' | 'la-vie-est-belle' | 'other'
+  customPerfumeName?: string;      // Only if perfumeType === 'other'
+  loveLetterEnabled?: boolean;     // Whether love letter was requested
+  loveLetterRecipientName?: string; // Only if loveLetterEnabled === true
+}
+
 export interface CartItem extends Product {
   quantity: number;
+  customization?: ProductCustomization; // Optional for backward compatibility
 }
 
 export type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
@@ -71,4 +80,18 @@ export interface Order {
   cart_items: CartItem[];
   total_price: number;
   status: OrderStatus;
+}
+
+export interface SpecialOffer {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  title: string;
+  summary: string;
+  details?: string;
+  is_active: boolean;
+  start_date: string;
+  end_date: string;
+  applicable_products: string[];
+  priority: number;
 }
