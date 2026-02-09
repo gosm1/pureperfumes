@@ -3,6 +3,7 @@ import { Outfit } from "next/font/google"; // Removed Playfair_Display
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
 import { CartProvider } from "@/context/CartContext";
+import { Analytics } from "@vercel/analytics/next";
 
 const outfit = Outfit({
     subsets: ["latin"],
@@ -103,6 +104,7 @@ export default function RootLayout({
                         <ClientLayout>{children}</ClientLayout>
                     </div>
                 </CartProvider>
+                <Analytics />
             </body>
         </html>
     );
